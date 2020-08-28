@@ -65,6 +65,7 @@
     "animate.css": "4.1.0",
     "apexcharts": "^3.19.3",
     "awesome-bootstrap-checkbox": "1.0.1",
+    "axios": "^0.20.0",
     "bootstrap": "4.5.0",
     "bootstrap_calendar": "https://github.com/xero/bootstrap_calendar.git#1.0.1",
     "classnames": "^2.2.6",
