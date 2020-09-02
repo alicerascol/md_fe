@@ -81,36 +81,35 @@ class Sidebar extends React.Component {
               this.props.dispatch(changeActiveSidebarItem(activeItem))
             }
             activeItem={this.props.activeItem}
-            header="Dashboard"
+            header="Faculty Details"
             isHeader
             iconName="flaticon-home"
             link="/app/main"
             index="main"
           />
-          <h5 className={[s.navTitle, s.groupTitle].join(" ")}>TEMPLATE</h5>
-          <LinksGroup
+          {/* <LinksGroup
             onActiveSidebarItemChange={(activeItem) =>
               this.props.dispatch(changeActiveSidebarItem(activeItem))
             }
             activeItem={this.props.activeItem}
-            header="Typography"
+            header="Typografy"
             isHeader
             iconName="flaticon-network"
             link="/app/typography"
             index="core"
-          />
+          /> */}
           <LinksGroup
             onActiveSidebarItemChange={(t) =>
               this.props.dispatch(changeActiveSidebarItem(t))
             }
             activeItem={this.props.activeItem}
-            header="Tables Basic"
+            header="Studets"
             isHeader
             iconName="flaticon-map-location"
             link="/app/tables"
             index="tables"
           />
-          <LinksGroup
+          {/* <LinksGroup
             onActiveSidebarItemChange={(activeItem) =>
               this.props.dispatch(changeActiveSidebarItem(activeItem))
             }
@@ -145,7 +144,7 @@ class Sidebar extends React.Component {
                 link: "/app/maps",
               },
             ]}
-          />
+          /> */}
         </ul>
         {/* <h5 className={s.navTitle}>
                     LABELS

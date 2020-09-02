@@ -184,29 +184,29 @@ class Header extends React.Component {
         </Form> */}
 
         <Nav className="ml-md-0 d-flex nav-responsive">
-          <Dropdown
+          {/* <Dropdown
             nav
             isOpen={this.state.notificationsOpen}
             toggle={this.toggleNotifications}
             id="basic-nav-dropdown"
             className={`${s.notificationsMenu}`}
             style={{ marginRight: "auto" }}
-          >
-            <DropdownToggle nav style={{ color: "#f4f4f5", padding: 0 }}>
+          > */}
+          {/* <DropdownToggle nav style={{ color: "#f4f4f5", padding: 0 }}>
               <span
                 className={`${s.avatar} rounded-circle thumb-sm float-left mr-2`}
               >
                 <img src={avatar} alt="..." />
               </span>
               <span className={`small ${s.accountCheck}`}>Philip smith</span>
-            </DropdownToggle>
-            {/* <DropdownMenu
+            </DropdownToggle> */}
+          {/* <DropdownMenu
               right
               className={`${s.notificationsWrapper} py-0 animate__animated animate__faster animate__fadeInUp`}
             >
               <Notifications />
             </DropdownMenu> */}
-          </Dropdown>
+          {/* </Dropdown> */}
           <NavItem className="d-lg-none d-md-block d-sm-none">
             <NavLink
               onClick={this.toggleSearchOpen}

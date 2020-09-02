@@ -118,7 +118,7 @@ class Register extends React.Component {
         <Container>
           <Widget
             className="widget-auth mx-auto"
-            title={<h3 className="mt-0">Login to Dashboard</h3>}
+            title={<h3 className="mt-0">Register</h3>}
           >
             <p className="widget-auth-info">Please fill all fields below.</p>
             <form onSubmit={this.doRegister}>
