@@ -14,8 +14,11 @@ class Static extends React.Component {
     this.state = {
       students: [],
       showSendEmail: false,
+      showChangeStatus: false,
     };
     this.setSendEmailShow = this.setSendEmailShow.bind(this);
+    this.setChangeStatusShow = this.setChangeStatusShow.bind(this);
+
     // send email
     this.state.handleSendEmailClose = this.handleSendEmailClose.bind(this);
     this.state.handleSendEmailShow = this.handleSendEmailShow.bind(this);
@@ -73,7 +76,6 @@ class Static extends React.Component {
     localStorage.setItem("student_id", studentId);
     this.setSendEmailShow(true);
   }
-
   handleSendEmailSave(body) {
     this.setSendEmailShow(false);
     const studentId = localStorage.getItem("student_id");
@@ -88,6 +90,13 @@ class Static extends React.Component {
         localStorage.removeItem("student_id");
       });
   }
+
+  setChangeStatusShow(status) {
+    this.setState({ showChangeStatus: status });
+  }
+  handleChangeStatusShow() {}
+  handleChangeStatusSave() {}
+  handleChangeStatusClose() {}
 
   render() {
     return (
