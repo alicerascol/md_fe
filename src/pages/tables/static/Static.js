@@ -16,10 +16,24 @@ class Static extends React.Component {
       showSendEmail: false,
     };
     this.setSendEmailShow = this.setSendEmailShow.bind(this);
+    // send email
     this.state.handleSendEmailClose = this.handleSendEmailClose.bind(this);
     this.state.handleSendEmailShow = this.handleSendEmailShow.bind(this);
+    this.state.handleSendEmailSave = this.handleSendEmailSave.bind(this);
     this.handleSendEmailClose = this.handleSendEmailClose.bind(this);
     this.handleSendEmailShow = this.handleSendEmailShow.bind(this);
+    this.handleSendEmailSave = this.handleSendEmailSave.bind(this);
+    // get documents
+
+    // change status
+    this.state.handleChangeStatusClose = this.handleChangeStatusClose.bind(
+      this
+    );
+    this.state.handleChangeStatusShow = this.handleChangeStatusShow.bind(this);
+    this.state.handleChangeStatusSave = this.handleChangeStatusSave.bind(this);
+    this.handleChangeStatusClose = this.handleChangeStatusClose.bind(this);
+    this.handleChangeStatusShow = this.handleChangeStatusShow.bind(this);
+    this.handleChangeStatusSave = this.handleChangeStatusSave.bind(this);
   }
 
   componentDidMount() {
@@ -55,8 +69,24 @@ class Static extends React.Component {
   handleSendEmailClose() {
     this.setSendEmailShow(false);
   }
-  handleSendEmailShow() {
+  handleSendEmailShow(studentId) {
+    localStorage.setItem("student_id", studentId);
     this.setSendEmailShow(true);
+  }
+
+  handleSendEmailSave(body) {
+    this.setSendEmailShow(false);
+    const studentId = localStorage.getItem("student_id");
+    axios
+      .post("http://localhost:8080/students/" + studentId + "/email", body)
+      .then(() => {
+        console.log("Successfully sent email");
+        localStorage.removeItem("student_id");
+      })
+      .catch(() => {
+        console.log("Something was wrong. Try again");
+        localStorage.removeItem("student_id");
+      });
   }
 
   render() {
@@ -131,30 +161,19 @@ class Static extends React.Component {
                           color="success"
                           className="mr-1"
                           onClick={(event) =>
-                            this.openChangeStatuModal(event, student.id)
+                            this.openChangeStatusModal(event, student.id)
                           }
                         >
                           Change Status
                         </Button>
                       </td>
                       <td className="text-muted">
-                        {/* <Button
-                          size="xs"
-                          color="success"
-                          className="mr-1"
-                          onClick={(event) =>
-                            this.openSendEmailModal(event, student.id)
-                          }
-                        >
-                          SendEmail
-                        </Button> */}
-
                         <Button
                           variant="primary"
                           size="xs"
                           color="success"
                           className="mr-1"
-                          onClick={this.handleSendEmailShow}
+                          onClick={() => this.handleSendEmailShow(student.id)}
                         >
                           Send Email
                         </Button>

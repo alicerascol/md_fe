@@ -1,11 +1,40 @@
 import React from "react";
-import { Button } from "reactstrap";
+import {
+  Button,
+  FormGroup,
+  Label,
+  InputGroup,
+  InputGroupAddon,
+  Input,
+  InputGroupText,
+} from "reactstrap";
 import { Modal } from "react-bootstrap";
 
 class ModalSendEmail extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      subject: "",
+      message: "",
+    };
   }
+
+  handleChangeEmail = (e) => {
+    this.setState({ subject: e.target.value });
+  };
+
+  handleChangeMessage = (e) => {
+    this.setState({ message: e.target.value });
+  };
+
+  handleSaveChanges = () => {
+    const body = {
+      subject: this.state.subject,
+      message: this.state.message,
+    };
+    this.props.handleSendEmailSave(body);
+    this.setState({ message: "Message", subject: "Subject" });
+  };
 
   render() {
     return (
@@ -17,18 +46,67 @@ class ModalSendEmail extends React.Component {
           <Modal.Title>Send email</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <label for="subject">Subject</label>
-          <input type="text" name="subject" id="subject" />
-          <br />
-          <label for="message">Message</label>
-          <input type="text" name="message" id="message" />
-          <br />
+          <FormGroup className="mt">
+            <Label for="subject">Subject</Label>
+            <InputGroup className="input-group-no-border">
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>
+                  <i className="la la-user text-white" />
+                </InputGroupText>
+              </InputGroupAddon>
+              <Input
+                id="subject"
+                className="input-transparent pl-3"
+                value={this.state.subject}
+                onChange={this.handleChangeEmail}
+                type="text"
+                required
+                name="subject"
+                placeholder="Subject"
+              />
+            </InputGroup>
+          </FormGroup>
+          <FormGroup className="mt">
+            <Label for="Message">Message</Label>
+            <InputGroup className="input-group-no-border">
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>
+                  <i className="la la-send text-white" />
+                </InputGroupText>
+              </InputGroupAddon>
+              <Input
+                id="message"
+                className="input-transparent pl-3"
+                value={this.state.message}
+                onChange={this.handleChangeMessage}
+                type="textarea"
+                required
+                name=""
+                placeholder="Message"
+              />
+            </InputGroup>
+          </FormGroup>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={this.props.handleSendEmailClose}>
+          <Button
+            type="submit"
+            color="danger"
+            className="auth-btn"
+            size="sm"
+            style={{ color: "#fff" }}
+            variant="secondary"
+            onClick={this.props.handleSendEmailClose}
+          >
             Close
           </Button>
-          <Button variant="primary" onClick={this.props.handleSendEmailClose}>
+          <Button
+            type="submit"
+            color="success"
+            className="auth-btn"
+            size="sm"
+            variant="primary"
+            onClick={this.handleSaveChanges}
+          >
             Save Changes
           </Button>
         </Modal.Footer>
