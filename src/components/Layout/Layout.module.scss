@@ -1,4 +1,4 @@
-@import '../../styles/app';
+@import "../../styles/app";
 
 .root {
   height: 100%;
@@ -16,7 +16,7 @@
   left: 0;
   right: 0;
   transition: left $sidebar-transition-time ease-in-out;
-  
+
   @media print {
     margin: 0;
   }
@@ -41,6 +41,7 @@
   flex-grow: 1;
   // 20px for footer height
   padding: 25px $content-padding ($content-padding + 20px);
+  margin-top: 50px;
 
   @media (max-width: breakpoint-max(sm)) {
     padding: 20px 15px;
@@ -50,7 +51,6 @@
   @media (min-width: breakpoint-min(sm)) {
     user-select: auto !important;
   }
-  
 }
 
 .contentFooter {

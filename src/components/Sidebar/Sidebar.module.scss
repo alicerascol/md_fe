@@ -1,4 +1,4 @@
-@import '../../styles/app';
+@import "../../styles/app";
 
 .root {
   width: $sidebar-width-open;
@@ -28,9 +28,8 @@
   :global(.sidebar-hide) & {
     display: none;
   }
-  
-  @include scroll-bar($sidebar-scrollbar-bg);
 
+  @include scroll-bar($sidebar-scrollbar-bg);
 
   @media (max-width: breakpoint-max(sm)) {
     position: static !important;
@@ -51,7 +50,7 @@
 
 .logo {
   margin: 20px 0 55px;
-  font-size: 18px;
+  font-size: 25px;
   width: 100%;
   font-weight: $font-weight-thin;
   text-align: center;

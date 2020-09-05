@@ -4,6 +4,8 @@ import { Dropdown } from "react-bootstrap";
 
 import Widget from "../../../components/Widget";
 import ModalSendEmail from "../../components/modals/ModalSendEmail";
+import ModalChangeStatus from "../../components/modals/ModalChangeStatus";
+import ModalGetDocuments from "../../components/modals/ModalGetDocuments";
 import s from "./Static.module.scss";
 import axios from "axios";
 
@@ -15,9 +17,11 @@ class Static extends React.Component {
       students: [],
       showSendEmail: false,
       showChangeStatus: false,
+      showGetDocs: false,
     };
     this.setSendEmailShow = this.setSendEmailShow.bind(this);
     this.setChangeStatusShow = this.setChangeStatusShow.bind(this);
+    this.setGetDocsShow = this.setGetDocsShow.bind(this);
 
     // send email
     this.state.handleSendEmailClose = this.handleSendEmailClose.bind(this);
@@ -45,14 +49,14 @@ class Static extends React.Component {
       .get("http://localhost:8080/students/" + facultyId + "/filtered/all")
       .then((response) => {
         this.setState({ students: response.data });
+        console.log("Successfully retrieved students");
       })
       .catch(() => {
         console.log("Something was wrong. Try again");
       });
   }
 
-  sort(event, status) {
-    event.preventDefault();
+  sortStudents(status) {
     const facultyId = localStorage.getItem("faculty_id");
     axios
       .get(
@@ -66,11 +70,31 @@ class Static extends React.Component {
       });
   }
 
+  sort(event, status) {
+    event.preventDefault();
+    this.setState({ students: [] });
+    this.sortStudents(status);
+  }
+
+  exportStudents() {
+    const facultyId = localStorage.getItem("faculty_id");
+    axios
+      .get("http://localhost:8080/students/" + facultyId + "/export")
+      .then(() => {
+        console.log("Successfully exported students");
+      })
+      .catch(() => {
+        console.log("Something was wrong. Try again");
+      });
+  }
+
+  // send email
   setSendEmailShow(status) {
     this.setState({ showSendEmail: status });
   }
   handleSendEmailClose() {
     this.setSendEmailShow(false);
+    localStorage.removeItem("student_id");
   }
   handleSendEmailShow(studentId) {
     localStorage.setItem("student_id", studentId);
@@ -87,22 +111,76 @@ class Static extends React.Component {
       })
       .catch(() => {
         console.log("Something was wrong. Try again");
+        alert("Something was wrong. Try again to send the email!");
         localStorage.removeItem("student_id");
       });
   }
 
+  // change status
   setChangeStatusShow(status) {
     this.setState({ showChangeStatus: status });
   }
-  handleChangeStatusShow() {}
-  handleChangeStatusSave() {}
-  handleChangeStatusClose() {}
+  handleChangeStatusShow(studentId) {
+    localStorage.setItem("student_id", studentId);
+    this.setChangeStatusShow(true);
+  }
+  handleChangeStatusClose() {
+    this.setChangeStatusShow(false);
+    localStorage.removeItem("student_id");
+  }
+  handleChangeStatusSave(status) {
+    this.setChangeStatusShow(false);
+    const studentId = localStorage.getItem("student_id");
+    axios
+      .post("http://localhost:8080/students/" + studentId + "/update/" + status)
+      .then(() => {
+        console.log("Successfully updated status");
+        localStorage.removeItem("student_id");
+        this.sortStudents("all");
+      })
+      .catch(() => {
+        console.log("Something was wrong. Try again");
+        alert("Wrong status!");
+        localStorage.removeItem("student_id");
+      });
+  }
+
+  // get documents
+  setGetDocsShow(status) {
+    this.setState({ showGetDocs: status });
+  }
+  handleGetDocsShow() {
+    this.setGetDocsShow(true);
+  }
+  handleGetDocsClose() {
+    this.setChangeStatusShow(false);
+  }
+  handleGetDocsSave() {
+    const studentId = localStorage.getItem("student_id");
+    const facultyId = localStorage.getItem("faculty_id");
+    axios
+      .get(
+        "http://localhost:8080/students/" +
+          facultyId +
+          "/" +
+          studentId +
+          "/documents"
+      )
+      .then(() => {
+        console.log("Successfully retired documents");
+        localStorage.removeItem("student_id");
+      })
+      .catch(() => {
+        console.log("Something was wrong. Try again!");
+        localStorage.removeItem("student_id");
+      });
+  }
 
   render() {
     return (
       <div className={s.root}>
         <h2 className="page-title">
-          <span className="fw-semi-bold">Students</span>
+          <span>Students</span>
         </h2>
         <Row>
           <Col>
@@ -118,6 +196,9 @@ class Static extends React.Component {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
+                  <Dropdown.Item onClick={(event) => this.sort(event, "all")}>
+                    ALL
+                  </Dropdown.Item>
                   <Dropdown.Item
                     onClick={(event) => this.sort(event, "REGISTERED")}
                   >
@@ -166,15 +247,25 @@ class Static extends React.Component {
                       <td className="text-muted">{student.status}</td>
                       <td className="text-muted">
                         <Button
+                          variant="primary"
                           size="xs"
                           color="success"
                           className="mr-1"
-                          onClick={(event) =>
-                            this.openChangeStatusModal(event, student.id)
+                          onClick={() =>
+                            this.handleChangeStatusShow(student.id)
                           }
                         >
                           Change Status
                         </Button>
+                        <ModalChangeStatus
+                          showChangeStatus={this.state.showChangeStatus}
+                          handleChangeStatusClose={
+                            this.state.handleChangeStatusClose
+                          }
+                          handleChangeStatusSave={
+                            this.state.handleChangeStatusSave
+                          }
+                        ></ModalChangeStatus>
                       </td>
                       <td className="text-muted">
                         <Button
@@ -208,6 +299,15 @@ class Static extends React.Component {
                   ))}
                 </tbody>
               </Table>
+              <Button
+                variant="primary"
+                size="xs"
+                color="success"
+                className="mr-1"
+                onClick={() => this.exportStudents()}
+              >
+                Export students
+              </Button>
             </Widget>
           </Col>
         </Row>

@@ -74,7 +74,9 @@ class Sidebar extends React.Component {
           this.element = nav;
         }}
       >
-        <header className={s.logo}>Vreau La Facultate</header>
+        <header className={s.logo}>
+          <strong>{localStorage.getItem("faculty_name")}</strong>
+        </header>
         <ul className={s.nav}>
           <LinksGroup
             onActiveSidebarItemChange={(activeItem) =>

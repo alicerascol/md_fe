@@ -67,7 +67,7 @@ class ModalSendEmail extends React.Component {
             </InputGroup>
           </FormGroup>
           <FormGroup className="mt">
-            <Label for="Message">Message</Label>
+            <Label for="message">Message</Label>
             <InputGroup className="input-group-no-border">
               <InputGroupAddon addonType="prepend">
                 <InputGroupText>
@@ -81,7 +81,7 @@ class ModalSendEmail extends React.Component {
                 onChange={this.handleChangeMessage}
                 type="textarea"
                 required
-                name=""
+                name="Message"
                 placeholder="Message"
               />
             </InputGroup>

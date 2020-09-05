@@ -35,6 +35,7 @@ export function logoutUser() {
   return (dispatch) => {
     dispatch(requestLogout());
     localStorage.removeItem("faculty_id");
+    localStorage.removeItem("faculty_name");
     localStorage.removeItem("authenticated");
     dispatch(receiveLogout());
   };
@@ -53,6 +54,7 @@ export function loginUser(creds) {
         .post("http://localhost:8080/faculties/login", user)
         .then((response) => {
           localStorage.setItem("faculty_id", response.data.id);
+          localStorage.setItem("faculty_name", response.data.name);
           localStorage.setItem("authenticated", true);
           creds.history.push("/app");
         })
