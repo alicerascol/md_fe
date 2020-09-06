@@ -6,6 +6,7 @@ import Widget from "../../../components/Widget";
 import ModalSendEmail from "../../components/modals/ModalSendEmail";
 import ModalChangeStatus from "../../components/modals/ModalChangeStatus";
 import ModalGetDocuments from "../../components/modals/ModalGetDocuments";
+import ExportExcel from "../../components/excelExport/ExportExcel";
 import s from "./Static.module.scss";
 import axios from "axios";
 
@@ -18,6 +19,9 @@ class Static extends React.Component {
       showSendEmail: false,
       showChangeStatus: false,
       showGetDocs: false,
+      studentDocs: [],
+      studentEmail: "",
+      studentsData: [],
     };
     this.setSendEmailShow = this.setSendEmailShow.bind(this);
     this.setChangeStatusShow = this.setChangeStatusShow.bind(this);
@@ -30,7 +34,12 @@ class Static extends React.Component {
     this.handleSendEmailClose = this.handleSendEmailClose.bind(this);
     this.handleSendEmailShow = this.handleSendEmailShow.bind(this);
     this.handleSendEmailSave = this.handleSendEmailSave.bind(this);
+
     // get documents
+    this.state.handleGetDocsShow = this.handleGetDocsShow.bind(this);
+    this.handleGetDocsShow = this.handleGetDocsShow.bind(this);
+    this.state.handleGetDocsClose = this.handleGetDocsClose.bind(this);
+    this.handleGetDocsClose = this.handleGetDocsClose.bind(this);
 
     // change status
     this.state.handleChangeStatusClose = this.handleChangeStatusClose.bind(
@@ -74,18 +83,6 @@ class Static extends React.Component {
     event.preventDefault();
     this.setState({ students: [] });
     this.sortStudents(status);
-  }
-
-  exportStudents() {
-    const facultyId = localStorage.getItem("faculty_id");
-    axios
-      .get("http://localhost:8080/students/" + facultyId + "/export")
-      .then(() => {
-        console.log("Successfully exported students");
-      })
-      .catch(() => {
-        console.log("Something was wrong. Try again");
-      });
   }
 
   // send email
@@ -147,15 +144,24 @@ class Static extends React.Component {
 
   // get documents
   setGetDocsShow(status) {
+    if (status === true) {
+      this.getStudentDocs();
+    }
     this.setState({ showGetDocs: status });
   }
-  handleGetDocsShow() {
+
+  handleGetDocsShow(studentId) {
+    localStorage.setItem("student_id", studentId);
     this.setGetDocsShow(true);
   }
+
   handleGetDocsClose() {
-    this.setChangeStatusShow(false);
+    this.setGetDocsShow(false);
+    this.setState({ studentDocs: "" });
+    localStorage.removeItem("student_id");
   }
-  handleGetDocsSave() {
+
+  getStudentDocs() {
     const studentId = localStorage.getItem("student_id");
     const facultyId = localStorage.getItem("faculty_id");
     axios
@@ -166,13 +172,27 @@ class Static extends React.Component {
           studentId +
           "/documents"
       )
-      .then(() => {
+      .then((response) => {
+        this.setState({ studentDocs: response.data.documents });
+        this.setState({ studentEmail: response.data.email.email });
         console.log("Successfully retired documents");
-        localStorage.removeItem("student_id");
       })
       .catch(() => {
         console.log("Something was wrong. Try again!");
         localStorage.removeItem("student_id");
+      });
+  }
+
+  exportStudents() {
+    const facultyId = localStorage.getItem("faculty_id");
+    axios
+      .get("http://localhost:8080/students/" + facultyId + "/export/data")
+      .then((response) => {
+        this.setState({ studentsData: response.data });
+        console.log("Successfully exported students");
+      })
+      .catch(() => {
+        console.log("Something was wrong. Try again");
       });
   }
 
@@ -285,15 +305,21 @@ class Static extends React.Component {
                       </td>
                       <td className="text-muted">
                         <Button
+                          variant="primary"
                           size="xs"
                           color="success"
                           className="mr-1"
-                          onClick={(event) =>
-                            this.openGetDocumentsModal(event, student.id)
-                          }
+                          onClick={() => this.handleGetDocsShow(student.id)}
                         >
-                          Get documents
+                          Get Documents
                         </Button>
+
+                        <ModalGetDocuments
+                          showGetDocs={this.state.showGetDocs}
+                          handleGetDocsClose={this.state.handleGetDocsClose}
+                          studentDocs={this.state.studentDocs}
+                          studentEmail={this.state.studentEmail}
+                        ></ModalGetDocuments>
                       </td>
                     </tr>
                   ))}
@@ -306,8 +332,10 @@ class Static extends React.Component {
                 className="mr-1"
                 onClick={() => this.exportStudents()}
               >
-                Export students
+                Get all students information
               </Button>
+
+              <ExportExcel studentsData={this.state.studentsData}></ExportExcel>
             </Widget>
           </Col>
         </Row>
