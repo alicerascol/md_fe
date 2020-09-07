@@ -52,7 +52,11 @@ export function loginUser(creds) {
         password: creds.password,
       };
       axios
-        .post("http://localhost:8080/faculties/login", user)
+        // .post("http://localhost:8080/faculties/login", user)
+        .post(
+          "http://backend.westeurope.azurecontainer.io:8080/faculties/login",
+          user
+        )
         .then((response) => {
           localStorage.setItem("faculty_id", response.data.id);
           if (

@@ -55,7 +55,12 @@ class Static extends React.Component {
   componentDidMount() {
     const facultyId = localStorage.getItem("faculty_id");
     axios
-      .get("http://localhost:8080/students/" + facultyId + "/filtered/all")
+      // .get("http://localhost:8080/students/" + facultyId + "/filtered/all")
+      .get(
+        "http://backend.westeurope.azurecontainer.io:8080/students/" +
+          facultyId +
+          "/filtered/all"
+      )
       .then((response) => {
         this.setState({ students: response.data });
         console.log("Successfully retrieved students");
@@ -68,8 +73,14 @@ class Static extends React.Component {
   sortStudents(status) {
     const facultyId = localStorage.getItem("faculty_id");
     axios
+      // .get(
+      //   "http://localhost:8080/students/" + facultyId + "/filtered/" + status
+      // )
       .get(
-        "http://localhost:8080/students/" + facultyId + "/filtered/" + status
+        "http://backend.westeurope.azurecontainer.io:8080/students/" +
+          facultyId +
+          "/filtered/" +
+          status
       )
       .then((response) => {
         this.setState({ students: response.data });
@@ -101,7 +112,13 @@ class Static extends React.Component {
     this.setSendEmailShow(false);
     const studentId = localStorage.getItem("student_id");
     axios
-      .post("http://localhost:8080/students/" + studentId + "/email", body)
+      // .post("http://localhost:8080/students/" + studentId + "/email", body)
+      .post(
+        "http://backend.westeurope.azurecontainer.io:8080/students/" +
+          studentId +
+          "/email",
+        body
+      )
       .then(() => {
         console.log("Successfully sent email");
         localStorage.removeItem("student_id");
@@ -129,7 +146,13 @@ class Static extends React.Component {
     this.setChangeStatusShow(false);
     const studentId = localStorage.getItem("student_id");
     axios
-      .post("http://localhost:8080/students/" + studentId + "/update/" + status)
+      // .post("http://localhost:8080/students/" + studentId + "/update/" + status)
+      .post(
+        "http://backend.westeurope.azurecontainer.io:8080/students/" +
+          studentId +
+          "/update/" +
+          status
+      )
       .then(() => {
         console.log("Successfully updated status");
         localStorage.removeItem("student_id");
@@ -165,8 +188,15 @@ class Static extends React.Component {
     const studentId = localStorage.getItem("student_id");
     const facultyId = localStorage.getItem("faculty_id");
     axios
+      // .get(
+      //   "http://localhost:8080/students/" +
+      //     facultyId +
+      //     "/" +
+      //     studentId +
+      //     "/documents"
+      // )
       .get(
-        "http://localhost:8080/students/" +
+        "http://backend.westeurope.azurecontainer.io:8080/students/" +
           facultyId +
           "/" +
           studentId +
@@ -187,7 +217,12 @@ class Static extends React.Component {
   exportStudents() {
     const facultyId = localStorage.getItem("faculty_id");
     axios
-      .get("http://localhost:8080/students/" + facultyId + "/export/data")
+      // .get("http://localhost:8080/students/" + facultyId + "/export/data")
+      .get(
+        "http://backend.westeurope.azurecontainer.io:8080/students/" +
+          facultyId +
+          "/export/data"
+      )
       .then((response) => {
         this.setState({ studentsData: response.data });
         console.log("Successfully exported students");

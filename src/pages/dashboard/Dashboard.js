@@ -41,10 +41,20 @@ class Dashboard extends React.Component {
     if (localStorage.getItem("loadedDocs") === "false") return;
     const facultyId = localStorage.getItem("faculty_id");
     axios
-      .get("http://localhost:8080/faculties/" + facultyId + "/details/download")
+      // .get("http://localhost:8080/faculties/" + facultyId + "/details/download")
+      .get(
+        "http://backend.westeurope.azurecontainer.io:8080/faculties/" +
+          facultyId +
+          "/details/download"
+      )
       .then(() => {
         axios
-          .get("http://localhost:8080/faculties/" + facultyId + "/details")
+          // .get("http://localhost:8080/faculties/" + facultyId + "/details")
+          .get(
+            "http://backend.westeurope.azurecontainer.io:8080/faculties/" +
+              facultyId +
+              "/details"
+          )
           .then((response) => {
             this.setState({ facultyDetails: response.data });
             console.log("Successfully retrieved details");
@@ -64,7 +74,11 @@ class Dashboard extends React.Component {
   getFacultyObject() {
     const facultyId = localStorage.getItem("faculty_id");
     axios
-      .get("http://localhost:8080/faculties/" + facultyId)
+      // .get("http://localhost:8080/faculties/" + facultyId)
+      .get(
+        "http://backend.westeurope.azurecontainer.io:8080/faculties/" +
+          facultyId
+      )
       .then((response) => {
         this.setState({ facultyObject: response.data });
         console.log("Successfully retrieved faculty object");
@@ -95,8 +109,14 @@ class Dashboard extends React.Component {
 
     const facultyId = localStorage.getItem("faculty_id");
     axios
+      // .post(
+      //   "http://localhost:8080/faculties/" + facultyId + "/details",
+      //   formData
+      // )
       .post(
-        "http://localhost:8080/faculties/" + facultyId + "/details",
+        "http://backend.westeurope.azurecontainer.io:8080/faculties/" +
+          facultyId +
+          "/details",
         formData
       )
       .then(() => {

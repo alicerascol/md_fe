@@ -22,7 +22,11 @@ export function registerUser(payload) {
   return (dispatch) => {
     if (payload.creds.email.length > 0 && payload.creds.password.length > 0) {
       axios
-        .post("http://localhost:8080/faculties", payload.creds)
+        // .post("http://localhost:8080/faculties", payload.creds)
+        .post(
+          "http://backend.westeurope.azurecontainer.io:8080/faculties",
+          payload.creds
+        )
         .then((response) => {
           toast.success("You've been registered successfully");
           payload.history.push("/login");
