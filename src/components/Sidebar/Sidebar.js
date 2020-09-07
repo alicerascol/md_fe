@@ -89,17 +89,6 @@ class Sidebar extends React.Component {
             link="/app/main"
             index="main"
           />
-          {/* <LinksGroup
-            onActiveSidebarItemChange={(activeItem) =>
-              this.props.dispatch(changeActiveSidebarItem(activeItem))
-            }
-            activeItem={this.props.activeItem}
-            header="Typografy"
-            isHeader
-            iconName="flaticon-network"
-            link="/app/typography"
-            index="core"
-          /> */}
           <LinksGroup
             onActiveSidebarItemChange={(t) =>
               this.props.dispatch(changeActiveSidebarItem(t))
@@ -111,89 +100,7 @@ class Sidebar extends React.Component {
             link="/app/tables"
             index="tables"
           />
-          {/* <LinksGroup
-            onActiveSidebarItemChange={(activeItem) =>
-              this.props.dispatch(changeActiveSidebarItem(activeItem))
-            }
-            activeItem={this.props.activeItem}
-            header="Notifications"
-            isHeader
-            iconName="flaticon-layers"
-            link="/app/notifications"
-            index="ui"
-          />
-          <LinksGroup
-            onActiveSidebarItemChange={(activeItem) =>
-              this.props.dispatch(changeActiveSidebarItem(activeItem))
-            }
-            activeItem={this.props.activeItem}
-            header="Components"
-            isHeader
-            iconName="flaticon-list"
-            link="/app/forms"
-            index="forms"
-            childrenLinks={[
-              {
-                header: "Charts",
-                link: "/app/charts",
-              },
-              {
-                header: "Icons",
-                link: "/app/icons",
-              },
-              {
-                header: "Maps",
-                link: "/app/maps",
-              },
-            ]}
-          /> */}
         </ul>
-        {/* <h5 className={s.navTitle}>
-                    LABELS
-                    <a className={s.actionLink}>
-                        <i className={`${s.glyphiconSm} glyphicon glyphicon-plus float-right`}/>
-                    </a>
-                </h5>
-                <ul className={s.sidebarLabels}>
-                    <li>
-                        <a href="#">
-                            <i className="fa fa-circle text-success mr-2"/>
-                            <span className={s.labelName}>My Recent</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i className="fa fa-circle text-primary mr-2"/>
-                            <span className={s.labelName}>Starred</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i className="fa fa-circle text-danger mr-2"/>
-                            <span className={s.labelName}>Background</span>
-                        </a>
-                    </li>
-                </ul>
-                <h5 className={s.navTitle}>
-                    PROJECTS
-                </h5>
-                <div className={s.sidebarAlerts}> 
-                    {this.props.alertsList.map(alert => // eslint-disable-line
-                        <Alert
-                            key={alert.id}
-                            className={s.sidebarAlert} color="transparent"
-                            isOpen={true} // eslint-disable-line
-                            toggle={() => {
-                                this.dismissAlert(alert.id);
-                            }}
-                        >
-                            <span>{alert.title}</span><br/>
-                            <Progress className={`bg-custom-dark progress-xs mt-1`} color={alert.color}
-                                      value={alert.value}/>
-                            <small>{alert.footer}</small>
-                        </Alert>,
-                    )}
-                </div>*/}
       </nav>
     );
   }

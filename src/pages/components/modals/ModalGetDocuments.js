@@ -14,7 +14,7 @@ class ModalGetDocuments extends React.Component {
         onHide={this.props.handleGetDocsClose}
       >
         <Modal.Header closeButton>
-          <Modal.Title className="whiteClass">
+          <Modal.Title>
             Student Documents <span>{this.props.studentEmail}</span>
           </Modal.Title>
         </Modal.Header>
@@ -25,12 +25,7 @@ class ModalGetDocuments extends React.Component {
                 <div key={index}>
                   <span>
                     <strong>
-                      <a
-                        className="whiteClass"
-                        href={this.props.studentDocs[key]}
-                      >
-                        {key}
-                      </a>
+                      <a href={this.props.studentDocs[key]}>{key}</a>
                     </strong>
                   </span>
                   <br />

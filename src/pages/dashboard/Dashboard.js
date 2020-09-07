@@ -1,172 +1,214 @@
 import React from "react";
-import { Row, Col, Progress } from "reactstrap";
-
+import { JSONToHTMLTable } from "@kevincobain2000/json-to-html-table";
+import axios from "axios";
 import Widget from "../../components/Widget";
-
-import AnimateNumber from "react-animated-number";
-
 import s from "./Dashboard.module.scss";
+
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      graph: null,
-      checkedArr: [false, false, false],
+      // Initially, no file is selected
+      selectedFile: null,
+      showCurrentInfo: false,
+      facultyDetails: this.getCurrentInfo(),
+      facultyObject: this.getFacultyObject(),
     };
-    this.checkTable = this.checkTable.bind(this);
+
+    this.setShowCurrentInfo = this.setShowCurrentInfo.bind(this);
+
+    this.state.handleCloseCurrentInfo = this.handleCloseCurrentInfo.bind(this);
+    this.state.handleShowCurrentInfo = this.handleShowCurrentInfo.bind(this);
+    this.state.handleSaveCurrentInfo = this.handleSaveCurrentInfo.bind(this);
+    this.handleCloseCurrentInfo = this.handleCloseCurrentInfo.bind(this);
+    this.handleShowCurrentInfo = this.handleShowCurrentInfo.bind(this);
+    this.handleSaveCurrentInfo = this.handleSaveCurrentInfo.bind(this);
   }
 
-  checkTable(id) {
-    let arr = [];
-    if (id === 0) {
-      const val = !this.state.checkedArr[0];
-      for (let i = 0; i < this.state.checkedArr.length; i += 1) {
-        arr[i] = val;
-      }
-    } else {
-      arr = this.state.checkedArr;
-      arr[id] = !arr[id];
-    }
-    if (arr[0]) {
-      let count = 1;
-      for (let i = 1; i < arr.length; i += 1) {
-        if (arr[i]) {
-          count += 1;
-        }
-      }
-      if (count !== arr.length) {
-        arr[0] = !arr[0];
-      }
-    }
-    this.setState({
-      checkedArr: arr,
-    });
+  // send email
+  setShowCurrentInfo(status) {
+    this.setState({ showCurrentInfo: status });
   }
+  handleCloseCurrentInfo() {
+    this.setShowCurrentInfo(false);
+  }
+  handleShowCurrentInfo() {
+    this.setShowCurrentInfo(true);
+  }
+  handleSaveCurrentInfo() {}
+
+  getCurrentInfo() {
+    if (localStorage.getItem("loadedDocs") === "false") return;
+    const facultyId = localStorage.getItem("faculty_id");
+    axios
+      .get("http://localhost:8080/faculties/" + facultyId + "/details/download")
+      .then(() => {
+        axios
+          .get("http://localhost:8080/faculties/" + facultyId + "/details")
+          .then((response) => {
+            this.setState({ facultyDetails: response.data });
+            console.log("Successfully retrieved details");
+          })
+          .catch(() => {
+            console.log("Something was wrong. Try again!");
+            localStorage.removeItem("student_id");
+          });
+        console.log("Successfully retrieved details");
+      })
+      .catch(() => {
+        console.log("Something was wrong. Try again!");
+        localStorage.removeItem("student_id");
+      });
+  }
+
+  getFacultyObject() {
+    const facultyId = localStorage.getItem("faculty_id");
+    axios
+      .get("http://localhost:8080/faculties/" + facultyId)
+      .then((response) => {
+        this.setState({ facultyObject: response.data });
+        console.log("Successfully retrieved faculty object");
+      })
+      .catch(() => {
+        console.log("Something was wrong. Try again!");
+        localStorage.removeItem("student_id");
+      });
+  }
+
+  // On file select (from the pop up)
+  onFileChange = (event) => {
+    // Update the state
+    this.setState({ selectedFile: event.target.files[0] });
+  };
+
+  // On file upload (click the upload button)
+  onFileUpload = () => {
+    // Create an object of formData
+    const formData = new FormData();
+
+    // Update the formData object
+    formData.append(
+      "detailsFacultyFile",
+      this.state.selectedFile,
+      this.state.selectedFile.name
+    );
+
+    const facultyId = localStorage.getItem("faculty_id");
+    axios
+      .post(
+        "http://localhost:8080/faculties/" + facultyId + "/details",
+        formData
+      )
+      .then(() => {
+        if (localStorage.getItem("loadedDocs") === "false")
+          localStorage.setItem("loadedDocs", "true");
+        this.setState({ selectedFile: false });
+        console.log("Successfully uploaded document");
+        window.location.reload(false);
+      })
+      .catch(() => {
+        console.log("Something was wrong. Try again");
+        alert("Something was wrong. Try again to upload the document!");
+      });
+  };
+
+  // File content to be displayed after file upload is complete
+  fileData = () => {
+    if (this.state.selectedFile) {
+      return (
+        <div>
+          <h2>File Details:</h2>
+          <p>File Name: {this.state.selectedFile.name}</p>
+          <p>File Type: {this.state.selectedFile.type}</p>
+          <p>
+            Last Modified:{" "}
+            {this.state.selectedFile.lastModifiedDate.toDateString()}
+          </p>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <br />
+          <h4>Choose before Pressing the Upload button</h4>
+        </div>
+      );
+    }
+  };
 
   render() {
+    if (localStorage.loadedDocs === "false")
+      return (
+        <div className={s.root}>
+          <h2>Please upload document with the details of the faculty ... </h2>
+          <Widget className="bg-transparent">
+            <div>
+              <div>
+                <input type="file" onChange={this.onFileChange} />
+                <button
+                  onClick={this.onFileUpload}
+                  disabled={this.state.selectedFile === null}
+                >
+                  Upload!
+                </button>
+              </div>
+              {this.fileData()}
+            </div>
+          </Widget>
+        </div>
+      );
+    if (!this.state.facultyObject || !this.state.facultyDetails)
+      return <div className={s.root}>Loading...</div>;
     return (
       <div className={s.root}>
-        <h1 className="page-title">Faculty </h1>
+        {/* <Widget
+          className="bg-transparent"
+          title={<h3>Update faculty details </h3>}
+        >
+          <Button
+            variant="primary"
+            size="xs"
+            color="success"
+            className="mr-1"
+            onClick={() => this.handleShowCurrentInfo()}
+          >
+            Update faculty details
+          </Button>
+          <ShowCurrentInfo
+            showCurrentInfo={this.state.showCurrentInfo}
+            handleCloseCurrentInfo={this.state.handleCloseCurrentInfo}
+            handleSaveCurrentInfo={this.state.handleSaveCurrentInfo}
+            facultyDetails={this.state.facultyDetails}
+          ></ShowCurrentInfo>
+        </Widget> */}
 
-        <Row>
-          <Col lg={7}>
-            <Widget className="bg-transparent">
-              <div>Here you can edit faculty</div>
-            </Widget>
-          </Col>
-          <Col lg={1} />
+        <Widget
+          className="bg-transparent"
+          title={<h3>Update details about faculty </h3>}
+        >
+          <div>
+            <div>
+              <input type="file" onChange={this.onFileChange} />
+              <button
+                onClick={this.onFileUpload}
+                disabled={this.state.selectedFile === null}
+              >
+                Upload!
+              </button>
+            </div>
+            {this.fileData()}
+          </div>
+        </Widget>
 
-          <Col lg={4}>
-            <Widget
-              className="bg-transparent"
-              title={
-                <h5>
-                  {" "}
-                  Map
-                  <span className="fw-semi-bold">&nbsp;Statistics</span>
-                </h5>
-              }
-              settings
-              refresh
-              close
-            >
-              <p>
-                Status: <strong>Live</strong>
-              </p>
-              <p>
-                <span className="circle bg-default text-white">
-                  <i className="fa fa-map-marker" />
-                </span>{" "}
-                &nbsp; 146 Countries, 2759 Cities
-              </p>
-              <div className="row progress-stats">
-                <div className="col-md-9 col-12">
-                  <h6 className="name fw-semi-bold">Foreign Visits</h6>
-                  <p className="description deemphasize mb-xs text-white">
-                    Some Cool Text
-                  </p>
-                  <Progress
-                    color="primary"
-                    value="60"
-                    className="bg-custom-dark progress-xs"
-                  />
-                </div>
-                <div className="col-md-3 col-12 text-center">
-                  <span className="status rounded rounded-lg bg-default text-light">
-                    <small>
-                      <AnimateNumber value={75} />%
-                    </small>
-                  </span>
-                </div>
-              </div>
-              <div className="row progress-stats">
-                <div className="col-md-9 col-12">
-                  <h6 className="name fw-semi-bold">Local Visits</h6>
-                  <p className="description deemphasize mb-xs text-white">
-                    P. to C. Conversion
-                  </p>
-                  <Progress
-                    color="danger"
-                    value="39"
-                    className="bg-custom-dark progress-xs"
-                  />
-                </div>
-                <div className="col-md-3 col-12 text-center">
-                  <span className="status rounded rounded-lg bg-default text-light">
-                    <small>
-                      <AnimateNumber value={84} />%
-                    </small>
-                  </span>
-                </div>
-              </div>
-              <div className="row progress-stats">
-                <div className="col-md-9 col-12">
-                  <h6 className="name fw-semi-bold">Sound Frequencies</h6>
-                  <p className="description deemphasize mb-xs text-white">
-                    Average Bitrate
-                  </p>
-                  <Progress
-                    color="success"
-                    value="80"
-                    className="bg-custom-dark progress-xs"
-                  />
-                </div>
-                <div className="col-md-3 col-12 text-center">
-                  <span className="status rounded rounded-lg bg-default text-light">
-                    <small>
-                      <AnimateNumber value={92} />%
-                    </small>
-                  </span>
-                </div>
-              </div>
-              <h6 className="fw-semi-bold mt">Map Distributions</h6>
-              <p>
-                Tracking: <strong>Active</strong>
-              </p>
-              <p>
-                <span className="circle bg-default text-white">
-                  <i className="fa fa-cog" />
-                </span>
-                &nbsp; 391 elements installed, 84 sets
-              </p>
-              <div className="input-group mt">
-                <input
-                  type="text"
-                  className="form-control bg-custom-dark border-0"
-                  placeholder="Search Map"
-                />
-                <span className="input-group-btn">
-                  <button
-                    type="submit"
-                    className={`btn btn-subtle-blue ${s.searchBtn}`}
-                  >
-                    <i className="fa fa-search text-light" />
-                  </button>
-                </span>
-              </div>
-            </Widget>
-          </Col>
-        </Row>
+        <Widget className="bg-transparent" title={<h3>View details</h3>}>
+          {/* <button onClick={() => window.location.reload(false)}>
+            Refresh details
+          </button> */}
+          <JSONToHTMLTable
+            data={this.state.facultyDetails}
+            tableClassName="table table-sm"
+          />
+        </Widget>
       </div>
     );
   }

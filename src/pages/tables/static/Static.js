@@ -179,6 +179,7 @@ class Static extends React.Component {
       })
       .catch(() => {
         console.log("Something was wrong. Try again!");
+        alert("Something was wrong. Try again to retrieve student docs!");
         localStorage.removeItem("student_id");
       });
   }
@@ -235,9 +236,9 @@ class Static extends React.Component {
                     VERIFIED
                   </Dropdown.Item>
                   <Dropdown.Item
-                    onClick={(event) => this.sort(event, "ACCEPTED")}
+                    onClick={(event) => this.sort(event, "ADMITTED")}
                   >
-                    ACCEPTED
+                    ADMITTED
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
