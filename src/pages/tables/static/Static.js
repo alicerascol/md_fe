@@ -145,10 +145,12 @@ class Static extends React.Component {
   handleChangeStatusSave(status) {
     this.setChangeStatusShow(false);
     const studentId = localStorage.getItem("student_id");
+    const facultyId = localStorage.getItem("faculty_id");
     axios
-      // .post("http://localhost:8080/students/" + studentId + "/update/" + status)
+      // .post("http://localhost:8080/students/" + facultyId + studentId + "/update/" + status)
       .post(
         "http://backend.westeurope.azurecontainer.io:8080/students/" +
+          facultyId +
           studentId +
           "/update/" +
           status
